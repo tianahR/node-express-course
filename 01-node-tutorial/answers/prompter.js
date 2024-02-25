@@ -16,25 +16,46 @@ const getBody = (req, callback) => {
       const partArray = part.split("=");
       resultHash[partArray[0]] = partArray[1];
     });
+    
     callback(resultHash);
   });
 };
 
 // here, you could declare one or more variables to store what comes back from the form.
-let item = "Enter something below.";
+let backgroundColor = "";
+
 
 // here, you can change the form below to modify the input fields and what is displayed.
 // This is just ordinary html with string interpolation.
 const form = () => {
-  return `
-  <body>
-  <p>${item}</p>
-  <form method="POST">
-  <input name="item"></input>
-  <button type="submit">Submit</button>
-  </form>
-  </body>
-  `;
+      
+      return `
+          <body>
+                <h2> Select Background Color</h2>
+
+                <p>Background color changed to ${backgroundColor}</p>
+
+                <form method="POST">
+                    <select name = "color" id='colorSelect' >
+                        <option value="white">White</option>
+                        <option value="red">Red</option>
+                        <option value="green">Green</option>
+                        <option value="blue">Blue</option>
+                    </select>
+                    <button type="submit">Submit</button>
+
+                </form>
+                
+          <style> 
+              body{background-color:${backgroundColor}}
+          </style>
+                
+          </body>
+          
+          
+      `
+      
+  ;
 };
 
 const server = http.createServer((req, res) => {
@@ -43,13 +64,29 @@ const server = http.createServer((req, res) => {
   if (req.method === "POST") {
     getBody(req, (body) => {
       console.log("The body of the post is ", body);
+      
       // here, you can add your own logic
-      if (body["item"]) {
-        item = body["item"];
-      } else {
-        item = "Nothing was entered.";
+      
+
+      switch(body["color"]){
+            case 'white':
+              backgroundColor = "White" ;
+              break;
+            case 'red':
+              backgroundColor = "Red";
+              break;
+            case 'green':
+              backgroundColor = "Green"
+              break;
+            case 'blue':
+              backgroundColor = "Blue"
+              break;
+            default :
+            backgroundColor = "White"
       }
       // Your code changes would end here
+
+      
       res.writeHead(303, {
         Location: "/",
       });
