@@ -32,6 +32,7 @@ const form = () => {
       return `
           <body>
                 <h2> Select Background Color</h2>
+                <h3>Comment</h3>
 
                 <p>Background color changed to ${backgroundColor}</p>
 
@@ -96,6 +97,10 @@ const server = http.createServer((req, res) => {
     res.end(form());
   }
 });
+
+server.on("request", (req) => {  
+  console.log("event received: ", req.method, req.url);  
+});  
 
 server.listen(3000);
 console.log("The server is listening on port 3000.");
