@@ -103,9 +103,17 @@ const logger = (req, res, next) => {
   next();
 };
 
-app.get('/', logger, (req, res) => {
+app.use(["/", "/about"], logger);
+
+app.get('/',(req, res) => {
   res.send('Home')
 })
+
+app.get('/about', (req, res) => {
+  res.send('About')
+})
+
+
 
 
 
