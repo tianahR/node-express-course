@@ -2,6 +2,8 @@
 const express = require ('express');
 const app = express();
 
+// week 3 
+
 // const {products} = require('./data');
 
 
@@ -86,14 +88,14 @@ const app = express();
 //     res.status(200).json(sortedProducts)
 //   })
 
+// end of week 3
 
-// --------------------------------------
+// ------------------------------------------------
 
 // middleware week 4
 
 // moved to logger.js 
 
-const logger = require("./logger");
 // const logger = (req, res, next) => {
 //   const method = req.method;
 //   const url = req.url;
@@ -113,28 +115,77 @@ const logger = require("./logger");
 // app.get('/',logger, (req, res) => {
 //   res.send('Home')
 // })
-
-app.use(logger); //apply to all urls
-
-app.get('/',(req, res) => {
-  res.send('Home')
-})
-
-app.get('/about', (req, res) => {
-  res.send('About')
-})
+// --------------------------------
 
 
 
+// const logger = require("./logger");
+
+// app.use(logger); //apply to all urls
+
+// app.get('/',(req, res) => {
+//   res.send('Home')
+// })
+
+// app.get('/about', (req, res) => {
+//   res.send('About')
+// })
+
+// GET AND POST API FOR PEOPLE
+const {people} = require ("./data");
 
 
-// week 4 middleware
+//static assets
+app.use(express.static("./methods-public"));
+
+
+//parse form data
+app.use(express.urlencoded({ extended: false }));
+//parse json
+app.use(express.json());
+
+app.get('/api/v1/people', (req, res) => {
+  res.status(200).json({ success: true, data: people });
+});
+
+
+app.post('/api/v1/people', (req, res) => {
+  const { name } = req.body;
+  if (!name) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Please provide a name" });
+  }
+  people.push({ id: people.length + 1, name: name });
+  res.status(201).json({ success: true, person: name });
+});
+
+app.post('/login',(req,res)=>{
+
+  const { name } = req.body
+  if (name) {
+    return res.status(200).send(`Welcome ${name}`)
+  }
+
+  res.status(401).send('Please Provide Credentials') 
+  //res.send('POST')
+}
+)
+
+// end of API GET AND POST FOR PEOPLE
+
+
+
+
+// END OF week 4 middleware
 
 
 
 // app.all('*',(req,res)=>{
 //     res.status(400).send('<h1>Page not found</h1>')
 // })
+
+
 
 
 
