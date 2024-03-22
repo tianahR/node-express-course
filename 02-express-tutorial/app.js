@@ -132,7 +132,14 @@ const app = express();
 // })
 
 // GET AND POST API FOR PEOPLE
-const {people} = require ("./data");
+// const {people} = require ("./data");
+
+/**
+ * You now need to add a require statement in the app.js file, 
+to import the peopleRouter code. 
+Then you need  app.use() statement
+ */
+const peopleRouter = require("./routes/people") //refactoring router for people
 
 
 //static assets
@@ -144,21 +151,25 @@ app.use(express.urlencoded({ extended: false }));
 //parse json
 app.use(express.json());
 
-app.get('/api/v1/people', (req, res) => {
-  res.status(200).json({ success: true, data: people });
-});
+// app.get('/api/v1/people', (req, res) => {
+//   res.status(200).json({ success: true, data: people });
+// });
+
+app.use("/api/v1/people", peopleRouter); //refactoring router for people
 
 
-app.post('/api/v1/people', (req, res) => {
-  const { name } = req.body;
-  if (!name) {
-    return res
-      .status(400)
-      .json({ success: false, message: "Please provide a name" });
-  }
-  people.push({ id: people.length + 1, name: name });
-  res.status(201).json({ success: true, person: name });
-});
+// app.post('/api/v1/people', (req, res) => {
+//   const { name } = req.body;
+//   if (!name) {
+//     return res
+//       .status(400)
+//       .json({ success: false, message: "Please provide a name" });
+//   }
+//   people.push({ id: people.length + 1, name: name });
+//   res.status(201).json({ success: true, person: name });
+// });
+
+// testing the FRONTEND provided by the instructor
 
 app.post('/login',(req,res)=>{
 
