@@ -39,7 +39,7 @@ emitter.emit("happens", "Hello World!");
 
 //-----------------
 const myEmitter = new EventEmitter();
-myEmitter.on('greet',(name)=>{console.log('Hello, ${name}');});
+myEmitter.on('greet',(name)=>{console.log(`Hello, ${name}`);});
 myEmitter.emit('greet','Fara');
 myEmitter.on('message',(sender,message)=>{console.log(`${sender} says: ${message}`);});
 myEmitter.emit('message','Fara','Hello to my code reviewer!');
