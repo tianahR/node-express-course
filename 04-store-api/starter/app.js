@@ -8,6 +8,9 @@ const app = express();
 // connect to DB 
 const connectDB = require('./db/connect')
 
+// import router
+const productsRouter = require('./routes/products')
+
 //import middleware
 const notFoundMiddleware = require('./middleware/not-found')
 const errorMiddleware = require('./middleware/error-handler')
@@ -20,8 +23,11 @@ app.get('/', (req,res)=>
     res.send('<h1>Store API</h1><a href="/api/v1/products">Products route </a>')
 })
 
+app.use('/api/v1/products', productsRouter)
+
 
 //products route
+
 
 app.use(notFoundMiddleware)
 app.use(errorMiddleware)
