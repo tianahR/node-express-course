@@ -4,7 +4,7 @@ const getAllProductsStatic = async (req,res)=>{
 
     // throw new Error('Testing async errors')
     // const products = await Product.find({featured: true} )
-    const products = await Product.find({})
+    const products = await Product.find({ price: { $gt: 30 }}) //greater than 30
     .sort('name')
     .select('name price')
     .limit(10) //use skip and limit for pagination functionality
@@ -20,7 +20,7 @@ const getAllProducts = async (req,res)=>{
 
     //to make sure that the properties to use in the query exists
 
-    const { featured, company, name, sort, fields } = req.query;
+    const { featured, company, name, sort, fields, numericFilters } = req.query;
     const queryObject = {};
 
     if (featured) {
@@ -39,10 +39,46 @@ const getAllProducts = async (req,res)=>{
     }
 
 
+    // numeric filter
+
+    if (numericFilters) {
+        const operatorMap = {
+          '>': '$gt',  
+          '>=': '$gte',
+          '=': '$eq',
+          '<': '$lt',
+          '<=': '$lte',
+        };
+
+        console.log(numericFilters) ;
+        const regEx = /\b(>|>=|=|<|<=)\b/g;
+
+        // converted values understood by the mongoose
+        let filters = numericFilters.replace(
+          regEx,
+          (match) => `-${operatorMap[match]}-`
+        );
+
+        console.log(filters);
+
+        const options = ['price', 'rating']; //2 properties that use number value
+
+        filters = filters.split(',').forEach((item) => {
+            
+          const [field, operator, value] = item.split('-');  //array destructuring
+          if (options.includes(field)) {
+            queryObject[field] = { [operator]: Number(value) };
+          }
+        });
+      }
+
+
 
     // end of to make sure that the query exists 
     // const products = await Product.find(req.query )
     // const products = await Product.find(queryObject );
+
+    console.log(queryObject);
 
     // sort
     let result = Product.find(queryObject);
