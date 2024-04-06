@@ -4,7 +4,7 @@ const getAllProductsStatic = async (req,res)=>{
 
     // throw new Error('Testing async errors')
     // const products = await Product.find({featured: true} )
-    const products = await Product.find({name: 'wooden table'} )
+    const products = await Product.find({}).sort('-name price')
     res.status(200).json({products, nbHits: products.length})
 }
 
@@ -16,7 +16,7 @@ const getAllProducts = async (req,res)=>{
 
     //to make sure that the properties to use in the query exists
 
-    const { featured, company, name } = req.query;
+    const { featured, company, name, sort } = req.query;
     const queryObject = {};
 
     if (featured) {
@@ -38,7 +38,19 @@ const getAllProducts = async (req,res)=>{
 
     // end of to make sure that the query exists 
     // const products = await Product.find(req.query )
-    const products = await Product.find(queryObject );
+    // const products = await Product.find(queryObject );
+
+    // sort
+    let result = Product.find(queryObject);
+
+    if(sort){
+        const sortList = sort.split(',').join(' ');
+        result = result.sort(sortList);
+    }else {
+        result = result.sort('createdAt');
+    }
+    
+    const products = await result;
 
     res.status(200).json({products, nbHits: products.length})
 }
