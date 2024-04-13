@@ -3,8 +3,11 @@
 // send back to frontend
 // setup authentication so only the request with JWT can access the dasboard
 
+
+
 const jwt = require('jsonwebtoken') // import the jwt package
-const CustomAPIError = require('../errors/custom-error')
+// const CustomAPIError = require('../errors/custom-error')
+const {BadRequestError} = require('../errors')
 
 //check in the controllers
 
@@ -15,7 +18,9 @@ const login = async(req,res)=>{
 
     //check if username and password exist - if not throw error
     if (!username || !password) {
-        throw new CustomAPIError('Please provide email and password',400)
+        // throw new CustomAPIError('Please provide email and password',400)
+        throw new BadRequestError('Please provide email and password')
+
       }
 
    
@@ -42,34 +47,46 @@ const login = async(req,res)=>{
 // keep secret or authorized data
 const dashboard = async (req, res) => {
 
-    console.log(req.headers);
-    const authHeader = req.headers.authorization;
-    console.log(`authHeader is ${authHeader}`)
+    //moved to auth middleware
 
-    //check if there is an authorization header - if not throw custom Error
-    if(!authHeader || !authHeader.startsWith('Bearer '))
-    {
-        throw new CustomAPIError('No token provided',401)
-    }
+    // console.log(req.headers);
+    // const authHeader = req.headers.authorization;
+    // console.log(`authHeader is ${authHeader}`)
 
-    const token = authHeader.split(' ')[1]
-    console.log(`Token is ${token}`)
+    // //check if there is an authorization header - if not throw custom Error
+    // if(!authHeader || !authHeader.startsWith('Bearer '))
+    // {
+    //     throw new CustomAPIError('No token provided',401)
+    // }
 
-    try{
-        const decoded = jwt.verify(token,process.env.JWT_SECRET)
-        console.log(decoded)
+    // const token = authHeader.split(' ')[1]
+    // console.log(`Token is ${token}`)
 
-        const luckyNumber = Math.floor(Math.random() * 100)
+    // try{
+    //     const decoded = jwt.verify(token,process.env.JWT_SECRET)
+    //     console.log(decoded)
+
+    //     const luckyNumber = Math.floor(Math.random() * 100)
+
+    
+    //     res.status(200).json({
+    //     msg: ` Hello ${decoded.username}`,
+    //     secret: `Here is your authorized data, your lucky number is ${luckyNumber}`,
+    //     })
+
+    // }catch(error){
+    //     throw new CustomAPIError('Not authorized to access this route',401)
+    // }
+
+    console.log(req.user)
+
+    const luckyNumber = Math.floor(Math.random() * 100)
 
     
         res.status(200).json({
-        msg: ` Hello ${decoded.username}`,
+        msg: ` Hello ${req.user.username}`,
         secret: `Here is your authorized data, your lucky number is ${luckyNumber}`,
         })
-
-    }catch(error){
-        throw new CustomAPIError('Not authorized to access this route',401)
-    }
   
     
   }
